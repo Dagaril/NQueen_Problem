@@ -1,4 +1,4 @@
-boardSize=5
+boardSize=15
 def _init_():
     board=[]
     for i in range(boardSize):
@@ -6,6 +6,7 @@ def _init_():
         for j in range(boardSize):
             board[i].append(0)
     return board
+
 def _main_(board):
     xInitial=int(input("Input Initial X: "))
     yInitial=int(input("Input Initial Y: "))
@@ -13,20 +14,18 @@ def _main_(board):
     _nextPossibility_(xInitial,yInitial,board)
     for i in range(boardSize):
         print(board[i])
+    print(_verifyBoard_(board))
 
         
 def _testerMain_(x,y,board):
     board[y][x]=1
     _nextPossibility_(x,y,board)
-    for i in range(boardSize):
-        print(board[i])
-    print()
 
 def _nextPossibility_(x,y,board):
     x+=1
     if(x==boardSize):
         x=0
-    if(_findSumBoard_(board)==5):
+    if(_findSumBoard_(board)==boardSize):
         return
     for yNew in range(0,boardSize):
         if _allDirsClear_(x,yNew,board):
@@ -38,12 +37,14 @@ def _nextPossibility_(x,y,board):
     if(_findSumCol_(x,board)==0):
         return "dead"
     return
+
 def _findSumBoard_(board):
     total=0
     for i in range(boardSize):
         for j in range(boardSize):
             total+=board[i][j]
     return total
+
 def _findSumCol_(col,board):
     total=0
     for i in range(boardSize):
@@ -68,12 +69,22 @@ def _allDirsClear_(x,y,board):
                 (x+row-y)<boardSize and board[row][x+row-y]==1):
                 return False
     return True
-board=_init_()
 
+def _verifyBoard_(board): #prints True if queen layout is valid
+    for i in range(boardSize):
+        for j in range(boardSize):
+            if not board[i][j]==1 and _allDirsClear_(j,i,board):
+                return False
+    return True
+
+board=_init_()
+'''
+num=0
 for i in range(boardSize):
     for j in range(boardSize):
+        num+=1
         _testerMain_(i,j,board)
+        print(_verifyBoard_(board),num)
         board=_init_()
 '''
 _main_(board)
-'''
