@@ -1,17 +1,55 @@
 boardSize=5
-board=[]
-for i in range(boardSize):
-    board.append([])
-    for j in range(boardSize):
-        board[i].append(0)
-
+def _init_():
+    board=[]
+    for i in range(boardSize):
+        board.append([])
+        for j in range(boardSize):
+            board[i].append(0)
+    return board
 def _main_(board):
-    xInitial=input("Input Initial X: ")
-    yInitial=input("Input Initial Y: ")
-    board[xInitial][yInitial]=1
+    xInitial=int(input("Input Initial X: "))
+    yInitial=int(input("Input Initial Y: "))
+    board[yInitial][xInitial]=1
+    _nextPossibility_(xInitial,yInitial,board)
+    for i in range(boardSize):
+        print(board[i])
+
+        
+def _testerMain_(x,y,board):
+    board[y][x]=1
+    _nextPossibility_(x,y,board)
+    for i in range(boardSize):
+        print(board[i])
+    print()
 
 def _nextPossibility_(x,y,board):
+    x+=1
+    if(x==boardSize):
+        x=0
+    if(_findSumBoard_(board)==5):
+        return
+    for yNew in range(0,boardSize):
+        if _allDirsClear_(x,yNew,board):
+            board[yNew][x]=1
+            y=yNew
+            ret=_nextPossibility_(x,y,board)
+            if(ret!=None):
+                board[yNew][x]=0
+    if(_findSumCol_(x,board)==0):
+        return "dead"
     return
+def _findSumBoard_(board):
+    total=0
+    for i in range(boardSize):
+        for j in range(boardSize):
+            total+=board[i][j]
+    return total
+def _findSumCol_(col,board):
+    total=0
+    for i in range(boardSize):
+           total+=board[i][col]
+    return total
+
 def _allDirsClear_(x,y,board):
     for row in range(boardSize):#check if in same column
         if not row == y and board[row][x] ==1:
@@ -25,19 +63,17 @@ def _allDirsClear_(x,y,board):
                 (x+y-row)<boardSize and board[row][x+y-row]==1):
                 return False
     if y+1<boardSize: #check diagonally down and to the right and down and to the left
-        for row in range(y+1,boardSize+1):
+        for row in range(y+1,boardSize):
             if ((x-row+y)>=0 and board[row][x-row+y]==1 )or(
                 (x+row-y)<boardSize and board[row][x+row-y]==1):
                 return False
     return True
+board=_init_()
 
-
-def test(x,y,board):
-    board[y][x]=7
-#    board[2][2]=1
-    board[3][0]=1
-    for i in range(boardSize):
-        print(board[i])
-    print(_allDirsClear_(x,y,board))
-
-test(1,2,board)
+for i in range(boardSize):
+    for j in range(boardSize):
+        _testerMain_(i,j,board)
+        board=_init_()
+'''
+_main_(board)
+'''
